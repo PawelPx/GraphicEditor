@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GraphicEditor</string>
+    <string name="canvasContentDescription">Graphic Editor is a simple line drawing app.
+   Drag your fingers to draw.</string>
+</resources>
