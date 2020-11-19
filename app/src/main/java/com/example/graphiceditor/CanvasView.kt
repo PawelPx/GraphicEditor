@@ -3,6 +3,7 @@ package com.example.graphiceditor
 import android.app.ActionBar
 import android.content.Context
 import android.graphics.*
+import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
@@ -12,12 +13,14 @@ import androidx.core.content.res.ResourcesCompat
 
 private const val STROKE_WIDTH = 12f
 
-class CanvasView(context: Context) : View(context) {
+class CanvasView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+    : View(context, attrs, defStyleAttr) {
+
     lateinit var extraCanvas: Canvas
     private lateinit var extraBitmap: Bitmap
     private lateinit var activeTool: Tool
     private val backgroundColor = ResourcesCompat.getColor(resources, R.color.colorBackground, null)
-    private val drawColor = ResourcesCompat.getColor(resources, R.color.colorPaint, null)
+    private var drawColor = ResourcesCompat.getColor(resources, R.color.colorPaint, null)
     private val canvasMargin = 200f
 
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
@@ -42,6 +45,12 @@ class CanvasView(context: Context) : View(context) {
         val bmp = Bitmap.createBitmap(this.drawingCache)
         this.isDrawingCacheEnabled = false
         return bmp
+    }
+
+    fun setColor(color: String){
+        invalidate();
+        this.drawColor = Color.parseColor(color);
+        paint.color = this.drawColor;
     }
 
     // set paint
