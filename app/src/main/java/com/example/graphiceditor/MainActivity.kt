@@ -1,20 +1,14 @@
 package com.example.graphiceditor
 
-import android.app.ActionBar
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
-import android.text.Layout
 import android.text.TextWatcher
-import android.util.DisplayMetrics
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
-import android.view.View.SYSTEM_UI_FLAG_FULLSCREEN
-import android.widget.Button
-import android.widget.EditText
-import android.widget.RelativeLayout
-import android.widget.SeekBar
-import androidx.core.content.ContextCompat
+import android.widget.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.colorpicker.*
 
@@ -23,13 +17,33 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val canvasView = findViewById<com.example.graphiceditor.CanvasView>(R.id.canvasView)
+        val canvasView = findViewById<CanvasView>(R.id.canvasView)
+        val pen = Pen(this, canvasView)
+        val rectangle = Rectangle(this, canvasView)
+        val oval = Oval(this, canvasView)
 
         val colorSelector = findViewById<RelativeLayout>(R.id.colorSelector)
         val strColor = findViewById<EditText>(R.id.strColor)
-        val button : Button = findViewById(R.id.button);
-        button.setOnClickListener {
+        val colorButton : Button = findViewById(R.id.colorButton);
+        val toolButton : Button = findViewById(R.id.toolButton);
+        colorButton.setOnClickListener {
             colorSelector.visibility = View.VISIBLE;
+        }
+        toolButton.setOnClickListener {
+            val toolsMenu: PopupMenu = PopupMenu(this,toolButton)
+            toolsMenu.menuInflater.inflate(R.menu.tool_selector,toolsMenu.menu)
+            toolsMenu.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item ->
+                when(item.itemId) {
+                    R.id.pen ->
+                        canvasView.setActiveTool(pen)
+                    R.id.rectangle ->
+                        canvasView.setActiveTool(rectangle)
+                    R.id.oval ->
+                        canvasView.setActiveTool(oval)
+                }
+                true
+            })
+            toolsMenu.show()
         }
 
         strColor.addTextChangedListener(object : TextWatcher {
@@ -62,64 +76,70 @@ class MainActivity : AppCompatActivity() {
                 }
             })
 
-            colorA.max = 255
-            colorA.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onStopTrackingTouch(seekBar: SeekBar) {}
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int,
-                                               fromUser: Boolean) {
-                    val colorStr = getColorString()
-                    strColor.setText(colorStr.replace("#","").toUpperCase())
-                    btnColorPreview.setBackgroundColor(Color.parseColor(colorStr))
-                }
-            })
-
-            colorR.max = 255
-            colorR.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onStopTrackingTouch(seekBar: SeekBar) {}
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int,
-                                               fromUser: Boolean) {
-                    val colorStr = getColorString()
-                    strColor.setText(colorStr.replace("#","").toUpperCase())
-                    btnColorPreview.setBackgroundColor(Color.parseColor(colorStr))
-                }
-            })
-
-            colorG.max = 255
-            colorG.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onStopTrackingTouch(seekBar: SeekBar) {}
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int,
-                                               fromUser: Boolean) {
-                    val colorStr = getColorString()
-                    strColor.setText(colorStr.replace("#","").toUpperCase())
-                    btnColorPreview.setBackgroundColor(Color.parseColor(colorStr))
-                }
-            })
-
-            colorB.max = 255
-            colorB.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onStopTrackingTouch(seekBar: SeekBar) {}
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int,
-                                               fromUser: Boolean) {
-                    val colorStr = getColorString()
-                    strColor.setText(colorStr.replace("#","").toUpperCase())
-                    btnColorPreview.setBackgroundColor(Color.parseColor(colorStr))
-                }
-            })
-
-            colorCancelBtn.setOnClickListener {
-                colorSelector.visibility = View.GONE
+        colorA.max = 255
+        colorA.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int,
+                                           fromUser: Boolean) {
+                val colorStr = getColorString()
+                strColor.setText(colorStr.replace("#","").toUpperCase())
+                btnColorPreview.setBackgroundColor(Color.parseColor(colorStr))
             }
+        })
 
-            colorOkBtn.setOnClickListener {
-                val color:String = getColorString()
-                linearLayout.setBackgroundColor(Color.parseColor(color))
-                canvasView.setColor(color);
-                colorSelector.visibility = View.GONE
+        colorR.max = 255
+        colorR.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int,
+                                               fromUser: Boolean) {
+                val colorStr = getColorString()
+                strColor.setText(colorStr.replace("#","").toUpperCase())
+                btnColorPreview.setBackgroundColor(Color.parseColor(colorStr))
             }
+        })
+
+        colorG.max = 255
+        colorG.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int,
+                                               fromUser: Boolean) {
+                val colorStr = getColorString()
+                strColor.setText(colorStr.replace("#","").toUpperCase())
+                btnColorPreview.setBackgroundColor(Color.parseColor(colorStr))
+            }
+        })
+
+        colorB.max = 255
+        colorB.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int,
+                                               fromUser: Boolean) {
+                val colorStr = getColorString()
+                strColor.setText(colorStr.replace("#","").toUpperCase())
+                btnColorPreview.setBackgroundColor(Color.parseColor(colorStr))
+            }
+        })
+
+        colorCancelBtn.setOnClickListener {
+            colorSelector.visibility = View.GONE
+        }
+
+        colorOkBtn.setOnClickListener {
+            val color:String = getColorString()
+            linearLayout.setBackgroundColor(Color.parseColor(color))
+            canvasView.setColor(color);
+            colorSelector.visibility = View.GONE
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.tool_selector, menu)
+        return true
     }
 
     fun getColorString(): String {

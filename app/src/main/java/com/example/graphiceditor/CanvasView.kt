@@ -21,22 +21,22 @@ class CanvasView @JvmOverloads constructor(context: Context, attrs: AttributeSet
     private lateinit var activeTool: Tool
     private val backgroundColor = ResourcesCompat.getColor(resources, R.color.colorBackground, null)
     private var drawColor = ResourcesCompat.getColor(resources, R.color.colorPaint, null)
-    private val canvasMargin = 200f
+    val topMargin = 200f
 
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
         if (::extraBitmap.isInitialized) extraBitmap.recycle()
         super.onSizeChanged(width, height, oldWidth, oldHeight)
-        extraBitmap = Bitmap.createBitmap(width, height - canvasMargin.toInt(), Bitmap.Config.ARGB_8888)
+        extraBitmap = Bitmap.createBitmap(width, height - topMargin.toInt(), Bitmap.Config.ARGB_8888)
         extraCanvas = Canvas(extraBitmap)
         extraCanvas.drawColor(backgroundColor)
 
         // set tool
-        activeTool = Pen(context, this, canvasMargin)
+        activeTool = Pen(context, this)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas.drawBitmap(extraBitmap, 0f, canvasMargin, null)
+        canvas.drawBitmap(extraBitmap, 0f, topMargin, null)
     }
 
     fun getBitmap(): Bitmap {
@@ -62,6 +62,10 @@ class CanvasView @JvmOverloads constructor(context: Context, attrs: AttributeSet
         strokeJoin = Paint.Join.ROUND // default: MITER
         strokeCap = Paint.Cap.ROUND // default: BUTT
         strokeWidth = STROKE_WIDTH // default: Hairline-width (really thin)
+    }
+
+    fun setActiveTool(tool: Tool) {
+        activeTool = tool
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
