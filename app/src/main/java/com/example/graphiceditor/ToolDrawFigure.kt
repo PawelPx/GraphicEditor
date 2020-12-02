@@ -2,8 +2,7 @@ package com.example.graphiceditor
 
 import android.content.Context
 
-abstract class ToolDrawFigure(context: Context, canvasView: CanvasView, margin: Float) : Tool(context, canvasView,
-    margin) {
+abstract class ToolDrawFigure(context: Context, canvasView: CanvasView) : Tool(context, canvasView) {
 
     abstract fun drawFigure()
 
@@ -12,7 +11,7 @@ abstract class ToolDrawFigure(context: Context, canvasView: CanvasView, margin: 
     }
 
     override fun draw() {
-        canvasView.extraCanvas.drawBitmap(oldBitmap, 0f, 0f, null)
+        canvasView.extraCanvas.drawBitmap(oldBitmap, 0f, -margin, null)
         frame.set(currentX, currentY, motionTouchEventX, motionTouchEventY)
         drawFigure()
     }

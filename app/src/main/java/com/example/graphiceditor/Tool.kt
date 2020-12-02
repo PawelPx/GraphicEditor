@@ -7,10 +7,10 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.view.ViewConfiguration
 
-abstract class Tool(context: Context, canvasView: CanvasView, margin: Float) {
+abstract class Tool(context: Context, canvasView: CanvasView) {
     protected val canvasView = canvasView
     protected val touchTolerance = ViewConfiguration.get(context).scaledTouchSlop
-    protected val margin = margin
+    protected val margin = canvasView.topMargin
     protected var path = Path()
     protected lateinit var oldBitmap: Bitmap
     protected var frame = RectF()

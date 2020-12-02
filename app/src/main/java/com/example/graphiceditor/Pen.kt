@@ -2,8 +2,7 @@ package com.example.graphiceditor
 
 import android.content.Context
 
-class Pen(context: Context, canvasView: CanvasView, margin: Float) : Tool(context, canvasView,
-    margin) {
+class Pen(context: Context, canvasView: CanvasView) : Tool(context, canvasView) {
 
     override fun start() {
         path.reset()
