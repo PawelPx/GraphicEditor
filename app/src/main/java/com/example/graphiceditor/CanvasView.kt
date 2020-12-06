@@ -9,9 +9,9 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.widget.Button
 import androidx.core.content.res.ResourcesCompat
+import kotlinx.android.synthetic.main.activity_main.view.*
 
 
-private const val STROKE_WIDTH = 12f
 
 class CanvasView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : View(context, attrs, defStyleAttr) {
@@ -21,6 +21,7 @@ class CanvasView @JvmOverloads constructor(context: Context, attrs: AttributeSet
     private lateinit var activeTool: Tool
     private val backgroundColor = ResourcesCompat.getColor(resources, R.color.colorBackground, null)
     private var drawColor = ResourcesCompat.getColor(resources, R.color.colorPaint, null)
+    var STROKE_WIDTH = 12f
     val topMargin = 200f
 
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
@@ -48,14 +49,26 @@ class CanvasView @JvmOverloads constructor(context: Context, attrs: AttributeSet
     }
 
     fun setBitmap(bitmap: Bitmap){
-        this.extraBitmap = bitmap;
-        //this.draw(this.extraCanvas);
+        this.extraBitmap = bitmap
+        //this.draw(this.extraCanvas)
     }
 
     fun setColor(color: String){
-        invalidate();
-        this.drawColor = Color.parseColor(color);
-        paint.color = this.drawColor;
+        invalidate()
+        this.drawColor = Color.parseColor(color)
+        paint.color = this.drawColor
+    }
+
+    fun setThickness(thickness: Float){
+        this.STROKE_WIDTH = thickness
+        paint.strokeWidth = STROKE_WIDTH
+    }
+
+    fun setFilling(filling: Boolean){
+        if(filling)
+            paint.style = Paint.Style.FILL_AND_STROKE
+        else
+            paint.style = Paint.Style.STROKE
     }
 
     // set paint
@@ -63,14 +76,19 @@ class CanvasView @JvmOverloads constructor(context: Context, attrs: AttributeSet
         color = drawColor
         isAntiAlias = true
         isDither = true
-        style = Paint.Style.STROKE // default: FILL
-        strokeJoin = Paint.Join.ROUND // default: MITER
-        strokeCap = Paint.Cap.ROUND // default: BUTT
-        strokeWidth = STROKE_WIDTH // default: Hairline-width (really thin)
+        style = Paint.Style.STROKE
+        strokeJoin = Paint.Join.ROUND
+        strokeCap = Paint.Cap.ROUND
+        strokeWidth = STROKE_WIDTH
     }
 
     fun setActiveTool(tool: Tool) {
         activeTool = tool
+    }
+
+    fun clear() {
+        extraCanvas.drawColor(Color.WHITE)
+        invalidate()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

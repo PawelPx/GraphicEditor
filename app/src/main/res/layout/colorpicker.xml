@@ -61,7 +61,7 @@
         <SeekBar
             android:id="@+id/colorR"
             android:padding="30px"
-            android:progress="255"
+            android:progress="0"
             android:progressDrawable="@drawable/seekbar_r_progress"
             android:thumb="@drawable/seekbar_r_thumb"
             android:layout_width="match_parent"

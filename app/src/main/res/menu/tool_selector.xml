@@ -1,12 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/thickness"
+          android:title="Thickness"
+          android:icon="@drawable/tool_thickness" >
+        <menu xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:id="@+id/thin"
+                android:title="Thin"
+                android:icon="@drawable/tool_line1" >
+            </item>
+            <item android:id="@+id/medium"
+                android:title="Medium"
+                android:icon="@drawable/tool_line2" >
+            </item>
+            <item android:id="@+id/thick"
+                android:title="Thick"
+                android:icon="@drawable/tool_line3" >
+            </item>
+        </menu>
+    </item>
+    <item android:id="@+id/filling"
+        android:title="Filling"
+        android:icon="@drawable/tool_filling">
+        <menu xmlns:android="http://schemas.android.com/apk/res/android">
+            <item android:id="@+id/empty"
+                android:title="Empty"
+                android:icon="@drawable/tool_empty" >
+            </item>
+            <item android:id="@+id/full"
+                android:title="Full"
+                android:icon="@drawable/tool_full" >
+            </item>
+        </menu>
+    </item>
     <item android:id="@+id/pen"
-          android:title="Pen" >
+          android:title="Pen"
+        android:icon="@drawable/tool_pen" >
+    </item>
+    <item android:id="@+id/line"
+        android:title="Line"
+        android:icon="@drawable/tool_line" >
     </item>
     <item android:id="@+id/rectangle"
-        android:title="Rectangle" >
+        android:title="Rectangle"
+        android:icon="@drawable/tool_rectangle" >
     </item>
     <item android:id="@+id/oval"
-        android:title="Oval" >
+        android:title="Oval"
+        android:icon="@drawable/tool_circle" >
+    </item>
+    <item android:id="@+id/rubber"
+        android:title="Rubber"
+        android:icon="@drawable/tool_rubber" >
     </item>
 </menu>

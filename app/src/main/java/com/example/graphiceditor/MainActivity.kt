@@ -1,18 +1,23 @@
 package com.example.graphiceditor
 
+import android.app.Activity
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.colorpicker.*
 import kotlinx.android.synthetic.main.load_file.*
@@ -28,8 +33,10 @@ class MainActivity : AppCompatActivity() {
 
         val canvasView = findViewById<CanvasView>(R.id.canvasView)
         val pen = Pen(this, canvasView)
+        val line = Line(this, canvasView)
         val rectangle = Rectangle(this, canvasView)
         val oval = Oval(this, canvasView)
+        val rubber = Rubber(this, canvasView)
         var selectedElement = "";
 
         val listView = findViewById<ListView>(R.id.recipe_list_view)
@@ -50,14 +57,43 @@ class MainActivity : AppCompatActivity() {
                 when (item.itemId) {
                     R.id.pen ->
                         canvasView.setActiveTool(pen)
+                    R.id.line ->
+                        canvasView.setActiveTool(line)
                     R.id.rectangle ->
                         canvasView.setActiveTool(rectangle)
                     R.id.oval ->
                         canvasView.setActiveTool(oval)
+                    R.id.rubber ->
+                        canvasView.setActiveTool(rubber)
+
+                    R.id.thin ->
+                        canvasView.setThickness(12f)
+                    R.id.medium ->
+                        canvasView.setThickness(24f)
+                    R.id.thick ->
+                        canvasView.setThickness(36f)
+
+                    R.id.empty ->
+                        canvasView.setFilling(false)
+                    R.id.full ->
+                        canvasView.setFilling(true)
                 }
                 true
             })
-            toolsMenu.show()
+
+            try {
+                val fieldMPopup = PopupMenu::class.java.getDeclaredField("mPopup")
+                fieldMPopup.isAccessible = true
+                val mPopup = fieldMPopup.get(toolsMenu)
+                mPopup.javaClass
+                    .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
+                    .invoke(mPopup, true)
+            } catch (e: Exception){
+                Log.e("Main", "Error showing menu icons.", e)
+            } finally {
+                toolsMenu.show()
+            }
+
         }
 
         optionsButton.setOnClickListener {
@@ -67,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                 PopupMenu.OnMenuItemClickListener {
                 override fun onMenuItemClick(item: MenuItem): Boolean {
                     when (item.itemId) {
-                        R.id.save -> saveFile.visibility = View.VISIBLE;
+                        R.id.save -> saveFile.visibility = View.VISIBLE
                         R.id.load -> {
                             val m = packageManager
                             var s = packageName
@@ -76,7 +112,8 @@ class MainActivity : AppCompatActivity() {
                             val list = mutableListOf<String>()
 
                             File(s).listFiles().forEach {// 3
-                                list.add(it.name);
+                                if(it.extension == "jpg")
+                                    list.add(it.name);
                             }
                             val adapter = ArrayAdapter(
                                 loadFile.context,
@@ -86,6 +123,7 @@ class MainActivity : AppCompatActivity() {
                             listView.adapter = adapter
                             loadFile.visibility = View.VISIBLE
                         }
+                        R.id.clear -> canvasView.clear()
                     }
                     return true;
                 }
@@ -99,26 +137,29 @@ class MainActivity : AppCompatActivity() {
             val p = m.getPackageInfo(s!!, 0)
             s = p.applicationInfo.dataDir
             var bitmap = canvasView.getBitmap()
-            val file = File(s, strFileName.text.toString() + ".jpg");
+            val file = File(s, strFileName.text.toString() + ".jpg")
             val fOut = FileOutputStream(file)
-            val result = bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
-            fOut.flush();
-            fOut.close();
+            val result = bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut)
+            fOut.flush()
+            fOut.close()
 
             var builder = AlertDialog.Builder(this)
             if(result)
             {
-                builder.setTitle("Success");
-                builder.setMessage("File save successful");
+                builder.setTitle("Success")
+                builder.setMessage("File save successful")
             }
             else
             {
-                builder.setTitle("Failure");
-                builder.setMessage("File save failed");
+                builder.setTitle("Failure")
+                builder.setMessage("File save failed")
             }
-            builder.show();
-            saveFile.visibility = View.GONE;
+            //var dialog = builder.create()
+            builder.show()
+            saveFile.visibility = View.GONE
+            hideKeyboard(canvasView)
         }
+
 
         saveCancel.setOnClickListener {
             saveFile.visibility = View.GONE;
@@ -257,6 +298,19 @@ class MainActivity : AppCompatActivity() {
         var b = Integer.toHexString(((255 * colorB.progress) / colorB.max))
         if(b.length==1) b = "0"+b
         return "#" + a + r + g + b
+    }
+
+    fun Fragment.hideKeyboard() {
+        view?.let { activity?.hideKeyboard(it) }
+    }
+
+    fun Activity.hideKeyboard() {
+        hideKeyboard(currentFocus ?: View(this))
+    }
+
+    fun Context.hideKeyboard(view: View) {
+        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
 
