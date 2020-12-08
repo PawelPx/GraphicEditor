@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity() {
                             s = p.applicationInfo.dataDir
                             val list = mutableListOf<String>()
 
-                            File(s).listFiles().forEach {// 3
+                            File(s).listFiles().filter { file -> file.extension.endsWith("jpg") }.forEach {// 3
                                 if(it.extension == "jpg")
                                     list.add(it.name);
                             }

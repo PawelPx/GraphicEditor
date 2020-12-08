@@ -47,10 +47,14 @@
             <Button
                 android:id="@+id/saveCancel"
                 android:text="Cancel"
-                android:background="#CCCCCC"
+                android:background="#EEEEEE"
                 android:layout_weight="0.5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+            <View
+                android:layout_width="1dp"
+                android:layout_height="fill_parent"
+                android:background="@android:color/holo_blue_light" />
             <Button
                 android:id="@+id/saveOk"
                 android:background="#EEEEEE"
