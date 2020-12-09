@@ -112,8 +112,7 @@ class MainActivity : AppCompatActivity() {
                             val list = mutableListOf<String>()
 
                             File(s).listFiles().filter { file -> file.extension.endsWith("jpg") }.forEach {// 3
-                                if(it.extension == "jpg")
-                                    list.add(it.name);
+                                list.add(it.name);
                             }
                             val adapter = ArrayAdapter(
                                 loadFile.context,
